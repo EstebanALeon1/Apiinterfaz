@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="ImagenesICONO" type="image/x-icon">
+    <title>TALENT TREND</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="css/login_empresa.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header2">
+        <div class="container-fluid"id="logbaring">
+            <div class="row align-items-center">
+                <div class="row">
+                    <div class="col-8">
+                        <img src="img/Logo.png" alt="Logoiama" class="logonav">
+                    </div>
+                    
+                    <div class="col-4">
+                        <a href="index_empresa.html" class="btn btn-outline-secondary btn-rounded btn-sm">
+                            <img src="img/box-arrow-left.svg" alt="Ingresar" class="logo_cerrar_seccion">cerrar sesión
+                        </a>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="options-panel">
+            <a href="formoferta.html" class="btn btn-primary btn-block">Insertar Oferta</a>
+            <button class="btn btn-primary btn-block">Editar Oferta</button>
+        </div>
+        
+        <!-- Table section -->
+        <div class="table-container">
+            <table class="table" id="oferta-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Tipo_Contrato</th>
+                        <th scope="col">Cargo</th>
+                        <th scope="col">CUOC</th>
+                        <th scope="col">Salario</th>
+                        <th scope="col">Tipo_Empleo</th>
+                        <th scope="col">N_Vacantes</th>
+                        <th scope="col">N_Postulaciones</th>
+                        <th scope="col">Editar</th>
+                        <th scope="col">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se llenarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container-fluid align-items-center">
+            <div class="row align-items-center">
+                <img src="img/Logo.png" alt="Imagen de inicio" class="imagen_footer">
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const url = "http://127.0.0.1:8000/oferta/ofertas/";
+            const tableBody = document.querySelector("#oferta-table tbody");
+
+            fetch(url)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                    let ofertas = data;
+                    ofertas.forEach(function (oferta) {
+                        let row = createNode("tr");
+                        let columns = [
+                            "nombre",
+                            "tipo_contrato",
+                            "cargo",
+                            "cuoc",
+                            "salario",
+                            "tipo_empleo",
+                            "n_vacantes",
+                            "n_postulaciones"
+                        ];
+
+                        columns.forEach(function (column) {
+                            let cell = createNode("td");
+                            cell.textContent = oferta[column];
+                            append(row, cell);
+                        });
+
+                        let editCell = createNode("td");
+                        let editLink = createNode("a");
+                        editLink.href = `/editar_oferta/${oferta.id}`;
+                        editLink.className = "btn btn-warning";
+                        editLink.textContent = "Editar";
+                        append(editCell, editLink);
+                        append(row, editCell);
+
+                        let deleteCell = createNode("td");
+                        let deleteLink = createNode("a");
+                        deleteLink.href = `/eliminar_oferta/${oferta.id}`;
+                        deleteLink.className = "btn btn-danger";
+                        deleteLink.textContent = "Eliminar";
+                        append(deleteCell, deleteLink);
+                        append(row, deleteCell);
+
+                        append(tableBody, row);
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            function createNode(element) {
+                return document.createElement(element);
+            }
+
+            function append(parent, el) {
+                return parent.appendChild(el);
+            }
+        });
+    </script>
+
+</body>
+</html>
